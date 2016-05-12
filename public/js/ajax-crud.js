@@ -21,7 +21,7 @@ $(document).ready(function() {
         })
     });
     //display modal form for creating new task
-    $("#tasks-list").on("click", "#btn-add", function() {
+    $(".container-narrow").on("click", "#btn-add", function() {
 
         $('#btn-save').val("add");
         $('#frmTasks').trigger("reset");
@@ -29,7 +29,7 @@ $(document).ready(function() {
     });
     //delete city and remove it from list
         $("#tasks-list").on("click", ".delete-task", function() {
-   
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -102,12 +102,12 @@ $(document).ready(function() {
                     cityname += '<td>'+
                 '<button class="btn btn-warning btn-xs btn-detail open-modal" value="' +
                  data.id + '"> Edit </button>';
-                    cityname += '<button class="btn btn-danger btn-xs btn-delete delete-task" value="' + 
+                    cityname += '<button class="btn btn-danger btn-xs btn-delete delete-task" value="' +
                     data.id + '">Delete</button>'+
-                  
+
                     '</td></tr>';
                     console.log(cityname);
-                   
+
                     if (state == "add") { //if user added a new record
                         $('#tasks-list').append(cityname);
                     } else { //if user updated an existing record
@@ -115,7 +115,7 @@ $(document).ready(function() {
                     }
 
                    $('#frmTasks').trigger("reset");
-                   
+
                  $('.modal').modal('hide');
 
                 },
@@ -129,25 +129,26 @@ $(document).ready(function() {
     });
 
 //$("#tasks-list").on("click", "#myalert", function() { alert('hii'); } );
-  
+
 });
 
-function GetLocalWeather(cityname) {
-    var localWeatherInput = {
-        query: cityname,
-        format: 'JSON',
-        num_of_days: '1',
-        date: '',
-        fx: '',
-        cc: '',
-        tp: '',
-        includelocation: '',
-        show_comments: '',
-        callback: 'LocalWeatherCallback'
-    };
-    JSONP_LocalWeather(localWeatherInput);
-}
+//Calling laravel with ajax
 
+function GetLocalWeather(city_name) {
+     var url = "/ajax-crud/public/cities";
+
+      $.get(url + '/weather/' + city_name, function(localWeather) {
+        console.log('nilesh');
+$('#cloudcover').val(localWeather.data.current_condition[0].cloudcover);
+    $('#humidity').val(localWeather.data.current_condition[0].humidity);
+    $('#temp_C').val(localWeather.data.current_condition[0].temp_C);
+    $('#visibility').val(localWeather.data.current_condition[0].weatherDesc[0].value);
+     $("#btn-save").removeAttr('disabled');
+      });
+
+
+}
+/*
 function LocalWeatherCallback(localWeather) {
     $('#cloudcover').val(localWeather.data.current_condition[0].cloudcover);
     $('#humidity').val(localWeather.data.current_condition[0].humidity);
@@ -175,6 +176,6 @@ function jsonP(url, callback) {
             console.log(e.message);
         }
     });
-}
+}*/
 
 
